@@ -9,22 +9,25 @@ import npe.security.ClearPassword;
  * Override to replace the use of char[].clone()
  */
 @TargetClass(value = ClearPassword.class)
-interface Target_npe_ClearPassword {
+interface Target_npe_security_ClearPassword {
 
     @Substitute
     public static ClearPassword createRaw(String algorithm, char[] password) {
         System.out.println("Substituting arraycopy for clone...\n");
         char[] clone = new char[password.length];
         System.arraycopy(password, 0, clone, 0, password.length);
-        return new Target_npe_RawClearPassword(algorithm, clone);
+        return new Target_npe_security_RawClearPassword(algorithm, clone);
     }
 }
 
+/**
+ * Override to gain access to the RawClearPassword package private class and have it implement ClearPassword
+ */
 @TargetClass(className = "npe.security.RawClearPassword")
-final class Target_npe_RawClearPassword implements ClearPassword {
+final class Target_npe_security_RawClearPassword implements ClearPassword {
 
     @Alias
-    Target_npe_RawClearPassword(final String algorithm, final char[] password) {
+    Target_npe_security_RawClearPassword(final String algorithm, final char[] password) {
     }
 
     @Override
@@ -35,7 +38,7 @@ final class Target_npe_RawClearPassword implements ClearPassword {
 
     @Override
     @Alias
-    public Target_npe_RawClearPassword clone() {
+    public Target_npe_security_RawClearPassword clone() {
         return null;
     }
 
